@@ -28,7 +28,6 @@ app.get('/recipes/detail/:recipeId', (request, response) => {
 
 //You can delete your recipe
 app.get('/recipes/delete/:recipeId', (request, response) => {
-    debugger
     Recipe
         .findByIdAndDelete(request.params.recipeId)
         .then((recipeData) => {
@@ -40,80 +39,57 @@ app.get('/recipes/delete/:recipeId', (request, response) => {
 });
 
 //Page where you can add your own recipes
-// app.get("/recipes/create/:recipeId", (request, response) => {
-//     Recipe
-//         .findById(req.params.recipeId)
-//         .then((recipeData) => {
-//             response.render('../views/add', {recipeHbs: recipeData});
-//         })
-//         .catch((error) => {
-//             response.send(error);
-//         });
-// });
-
-// app.post("/recipes/create", (request, response) => {
-//     Recipe
-//         .create({
-
-//         })
-//         .then((recipeData) => {
-//             // res.redirect(`/recipe/detail/${recipe._id}`)
-//             res.redirect(`/views/detail/${recipe._id}`);
-//         })
-//         .catch((error) => {
-//             res.send("error")
-//         })
-// })
-
 app.get("/recipes/create", (request,response)=> {
     response.render("add");
 });
 
 app.post("/recipes/create", (request,response)=> {
-    console.log(request.body);
     Recipe
         .create({
             title: request.body.title,
             level: request.body.level,
             cuisine: request.body.cuisine,
             dishType: request.body.dishType,
-            duration: request.body.duration
+            duration: request.body.duration,
+            image: request.body.image
         })
-        .then(()=> {
-            response.redirect(`/recipe/detail/${recipe._id}`);
+        .then((recipeInfo)=> {
+            response.redirect(`/recipes`);
         })
         .catch((err)=> {
             response.send("error");
-        })
-})
+        });
+});
 
 //Page where you can update the recipe
-app.get("/recipes/update", (req,res)=> {
+app.get("/recipes/update/:recipeId", (request,response)=> {
     Recipe
-        .findById(req.params.id)
+        .findById(request.params.recipeId)
         .then((recipeData)=> {
-            res.render("update", {recipeHbs: recipeData});
+            response.render("update", {recipeHbs: recipeData});
         })
         .catch((err)=> {
-            res.send("Error");
-        })
-})
+            response.send("Error");
+        });
+});
 
-app.post("/recipes/update", (req,res)=> {
+app.post("/recipes/update/:recipeId", (request,response)=> {
+    console.log(request.body)
     Recipe
-        .findByIdAndUpdate(req.params.id,{
-            title: req.body.title,
-            level: req.body.level,
-            cuisine: req.body.cuisine,
-            dishType: req.body.dishType,
-            duration: req.body.duration
+        .findByIdAndUpdate(request.params.recipeId,{
+            title: request.body.title,
+            level: request.body.level,
+            cuisine: request.body.cuisine,
+            dishType: request.body.dishType,
+            duration: request.body.duration,
+            image: request.body.image
         })
         .then((recipeData)=> {
-            res.redirect(`/recipe/detail/${recipe._id}`);
+            response.redirect(`/recipes/detail/${recipeData._id}`);
         })
         .catch((err)=> {
-            res.send("err");
-        })
-})
+            response.send("err");
+        });
+});
 
 module.exports = app;

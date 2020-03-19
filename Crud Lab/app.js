@@ -3,6 +3,7 @@ const express = require("express");
 const app = express();
 const hbs = require('hbs');
 const bodyParser = require('body-parser');
+app.use(bodyParser.urlencoded({ extended: false }))
 const path = require('path');
 hbs.registerPartials(__dirname + '/views/partials');
 app.set('view engine', 'hbs');
