@@ -1,6 +1,8 @@
 const express = require("express");
 const app = express();
 const Recipe = require("../models/Recipe");
+const multer  = require('multer');
+const upload = multer({ dest: 'public/'});
 
 //Page that contains all of the recipes
 app.get("/recipes", (request, response) => {
@@ -43,7 +45,7 @@ app.get("/recipes/create", (request,response)=> {
     response.render("add");
 });
 
-app.post("/recipes/create", (request,response)=> {
+app.post("/recipes/create", upload.single('preparationSteps'), (request,response)=> {
     Recipe
         .create({
             title: request.body.title,
@@ -51,7 +53,8 @@ app.post("/recipes/create", (request,response)=> {
             cuisine: request.body.cuisine,
             dishType: request.body.dishType,
             duration: request.body.duration,
-            image: request.body.image
+            image: request.body.image,
+            file: request.file.filename
         })
         .then((recipeInfo)=> {
             response.redirect(`/recipes`);

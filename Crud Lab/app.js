@@ -26,5 +26,6 @@ mongoose
 //Importing the files
 app.use("/", require("./routes/index"));
 app.use("/", require("./routes/recipes"));
+app.use("/", express.static('public'));
 
 app.listen(3000, () => console.log('🏃‍ on port', 3000));
